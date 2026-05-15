@@ -56,8 +56,8 @@ st.markdown("""
     [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
         border-color: #00fff2;
         box-shadow: 0 0 15px rgba(0, 255, 242, 0.6);
-        transform: translateX(10px);
         background-color: #1a1a1a;
+    }
     }
     [data-testid="stSidebar"] [data-testid="stRadio"] label[data-selected="true"] {
         background-color: #00fff2 !important;
