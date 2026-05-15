@@ -58,7 +58,6 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(0, 255, 242, 0.6);
         background-color: #1a1a1a;
     }
-    }
     [data-testid="stSidebar"] [data-testid="stRadio"] label[data-selected="true"] {
         background-color: #00fff2 !important;
         color: #111111 !important;
