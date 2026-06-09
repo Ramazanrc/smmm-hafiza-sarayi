@@ -173,7 +173,8 @@ if veriler:
             "14. Kat: Net Kâr Marjı Bölümü": "💧",
             "15. Kat: Brüt Kâr Marjı Bölümü": "⛏️",
             "16. Kat: Faaliyet Kârı Bölümü": "🔋",
-            "17. Kat: Hisse Başına Kazanç Bölümü": "📈"
+            "17. Kat: Hisse Başına Kazanç Bölümü": "📈",
+            "18. Kat: F/K Bölümü": "🏷️"
         }
         
         styled_kat_listesi = []
