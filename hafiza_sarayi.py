@@ -138,17 +138,24 @@ if veriler:
 
     if kat_listesi:
         # Kat listesine ikonlar ekleyerek asansörü görselleştiriyoruz
-        kat_icons = {
-            "Zemin Kat: VUK Lobisi": "🏛️",
-            "1. Kat: GVK Çarşısı": "🛍️",
-            "2. Kat: KVK Gökdeleni": "🏢",
-            "3. Kat: KDV Fabrikası": "🏭",
-            "4. Kat: ÖTV VIP Garajı": "🏎️",
-            "5. Kat: Tahsilat Zindanı": "⛓️",
-            "6. Kat: Yargı Salonu": "⚖️",
-            "7. Kat: Gizli Kasa Odası": "🔐",
-            "1. Kat: Likidite Bölümü": "🔬"  # YENİ EKLENEN LABORATUVAR İKONU
-        }
+    kat_icons = {
+        "Zemin Kat: VUK Lobisi": "🏛️",
+        "1. Kat: GVK Çarşısı": "🛍️",
+        "2. Kat: KVK Gökdeleni": "🏢",
+        "3. Kat: KDV Fabrikası": "🏭",
+        "4. Kat: ÖTV VIP Garajı": "🏎️",
+        "5. Kat: Tahsilat Zindanı": "⛓️",
+        "6. Kat: Yargı Salonu": "⚖️",
+        "7. Kat: Gizli Kasa Odası": "🔐",
+        "1. Kat: Likidite Bölümü": "🔬",
+        "2. Kat: Asit-Test Bölümü": "🧪",
+        "3. Kat: Nakit Oran Bölümü": "💰",
+        "4. Kat: Stok Bağımlılık Bölümü": "📦",
+        "5. Kat: Stok Devir Bölümü": "⚙️",
+        "6. Kat: Alacak Tahsil Bölümü": "🧲",
+        "7. Kat: Aktif Devir Bölümü": "🌋",
+        "8. Kat: Özkaynak Devir Bölümü": "👑"
+    }
         
         styled_kat_listesi = []
         for kat in kat_listesi:
