@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # --- 1. SAYFA AYARLARI VE CSS ---
-st.set_page_config(page_title="Hafıza Sarayı", layout="wide")
+st.set_page_config(page_title="Hafıza Kampüsü", layout="wide")
 
 st.markdown("""
     <style>
@@ -53,6 +53,7 @@ st.markdown("""
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    /* TİTREMEYİ ÖNLEYEN YENİ HOVER KISMI (Sağa kayma silindi) */
     [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
         border-color: #00fff2;
         box-shadow: 0 0 15px rgba(0, 255, 242, 0.6);
@@ -80,9 +81,10 @@ def get_supabase_data():
         "Authorization": f"Bearer {supabase_key}"
     }
     
+    # Sıralama koduna bina_adi da eklendi
     params = {
         "select": "*",
-        "order": "kat_adi.asc,durak_no.asc"
+        "order": "bina_adi.asc,kat_adi.asc,durak_no.asc"
     }
     
     try:
@@ -94,72 +96,95 @@ def get_supabase_data():
         return []
 
 # --- 3. ANA EKRAN TASARIMI VE ASANSÖR ---
-st.title("🏛️ Dijital Hafıza Sarayı")
+st.title("🏛️ Dijital Hafıza Kampüsü")
 st.markdown("*SMMM Sınavı Çoktan Seçmeli Soruları İçin Zihinsel Görsel Taktikler*")
 st.divider()
 
 veriler = get_supabase_data()
 
-# Sol Menüye (Asansör) Fütüristik Başlık Ekleme
-st.sidebar.markdown('<p class="asansor-baslik">🛗 ASANSÖR</p>', unsafe_allow_html=True)
-st.sidebar.markdown('<p class="asansor-alt-baslik">Sarayın hangi katına çıkmak istersiniz?</p>', unsafe_allow_html=True)
-
-kat_listesi = []
 if veriler:
+    # --- YENİ: KAMPÜS BİNA SEÇİMİ ---
+    binalar = []
     for v in veriler:
+        b = v.get("bina_adi")
+        if not b:
+            b = "Vergi Hukuku"
+        if b not in binalar:
+            binalar.append(b)
+            
+    st.sidebar.markdown('<p class="asansor-baslik">🧭 KAMPÜS</p>', unsafe_allow_html=True)
+    st.sidebar.markdown('<p class="asansor-alt-baslik">Hangi binaya girmek istersiniz?</p>', unsafe_allow_html=True)
+    
+    secilen_bina = st.sidebar.selectbox("Bina Seçin:", binalar, label_visibility="collapsed")
+    st.sidebar.divider()
+
+    # O binaya ait verileri filtrele
+    bina_verileri = [v for v in veriler if v.get("bina_adi", "Vergi Hukuku") == secilen_bina]
+
+    # --- SENİN ORİJİNAL ASANSÖRÜN BURADAN İTİBAREN BAŞLIYOR ---
+    st.sidebar.markdown('<p class="asansor-baslik">🛗 ASANSÖR</p>', unsafe_allow_html=True)
+    st.sidebar.markdown('<p class="asansor-alt-baslik">Sarayın hangi katına çıkmak istersiniz?</p>', unsafe_allow_html=True)
+
+    kat_listesi = []
+    for v in bina_verileri:
         if v["kat_adi"] not in kat_listesi:
             kat_listesi.append(v["kat_adi"])
 
-# Zemin katı en başa sabitleme
-zemin_kat_ismi = "Zemin Kat: VUK Lobisi"
-if zemin_kat_ismi in kat_listesi:
-    kat_listesi.remove(zemin_kat_ismi)
-    kat_listesi.insert(0, zemin_kat_ismi)
+    # Zemin katı en başa sabitleme
+    zemin_kat_ismi = "Zemin Kat: VUK Lobisi"
+    if zemin_kat_ismi in kat_listesi:
+        kat_listesi.remove(zemin_kat_ismi)
+        kat_listesi.insert(0, zemin_kat_ismi)
 
-if kat_listesi:
-    # Kat listesine ikonlar ekleyerek asansörü görselleştiriyoruz
-    kat_icons = {
-        "Zemin Kat: VUK Lobisi": "🏛️",
-        "1. Kat: GVK Çarşısı": "🛍️",
-        "2. Kat: KVK Gökdeleni": "🏢",
-        "3. Kat: KDV Fabrikası": "🏭",
-        "4. Kat: ÖTV VIP Garajı": "🏎️",
-        "5. Kat: Tahsilat Zindanı": "⛓️",
-        "6. Kat: Yargı Salonu": "⚖️",
-        "7. Kat: Gizli Kasa Odası": "🔐"
-    }
-    
-    styled_kat_listesi = []
-    for kat in kat_listesi:
-        icon = kat_icons.get(kat, "📌")
-        styled_kat_listesi.append(f"{icon} {kat}")
-
-    # VIP Asansör Radyo Butonları (Görünmez etiket ile)
-    secilen_styled_kat = st.sidebar.radio("Kat Seçimi:", styled_kat_listesi, key="ana_asansor_styled", label_visibility="collapsed")
-    
-    # Seçili olan ikonlu ismi, veritabanındaki orijinal haline geri çeviriyoruz
-    secilen_kat = secilen_styled_kat.split(" ", 1)[1] if " " in secilen_styled_kat else secilen_styled_kat
-    
-    filtrelenmis_veriler = [v for v in veriler if v["kat_adi"] == secilen_kat]
-
-    col1, col2 = st.columns(2, gap="large")
-
-    with col2:
-        st.markdown("### 🧠 Zihinsel Duraklar", unsafe_allow_html=True)
-        durak_isimleri = [f"Durak {d['durak_no']}: {d['baslik']}" for d in filtrelenmis_veriler]
+    if kat_listesi:
+        # Kat listesine ikonlar ekleyerek asansörü görselleştiriyoruz
+        kat_icons = {
+            "Zemin Kat: VUK Lobisi": "🏛️",
+            "1. Kat: GVK Çarşısı": "🛍️",
+            "2. Kat: KVK Gökdeleni": "🏢",
+            "3. Kat: KDV Fabrikası": "🏭",
+            "4. Kat: ÖTV VIP Garajı": "🏎️",
+            "5. Kat: Tahsilat Zindanı": "⛓️",
+            "6. Kat: Yargı Salonu": "⚖️",
+            "7. Kat: Gizli Kasa Odası": "🔐",
+            "1. Kat: Likidite Bölümü": "🔬"  # YENİ EKLENEN LABORATUVAR İKONU
+        }
         
-        # İç menü için benzersiz anahtar ekliyoruz
-        secilen_durak_ismi = st.radio("İncelemek istediğiniz durağı seçin:", durak_isimleri, key=f"durak_secim_{secilen_kat}")
-        
-        secilen_durak_data = next(d for d in filtrelenmis_veriler if f"Durak {d['durak_no']}: {d['baslik']}" == secilen_durak_ismi)
-        
-        st.markdown(f'<br><span class="anahtar-kelime">Şifre: {secilen_durak_data["anahtar_kelime"]}</span>', unsafe_allow_html=True)
-        st.markdown(f'<p class="senaryo-metni"><br>{secilen_durak_data["senaryo"]}</p>', unsafe_allow_html=True)
+        styled_kat_listesi = []
+        for kat in kat_listesi:
+            icon = kat_icons.get(kat, "📌")
+            styled_kat_listesi.append(f"{icon} {kat}")
 
-    with col1:
-        st.markdown(f'<p class="saray-baslik">{secilen_kat}</p>', unsafe_allow_html=True)
-        # KATIN ana resmini gösteriyoruz
-        if filtrelenmis_veriler:
-            st.image(filtrelenmis_veriler[0]["gorsel_url"], use_container_width=True)
+        # VIP Asansör Radyo Butonları
+        secilen_styled_kat = st.sidebar.radio("Kat Seçimi:", styled_kat_listesi, key="ana_asansor_styled", label_visibility="collapsed")
+        
+        # Seçili olan ikonlu ismi, veritabanındaki orijinal haline geri çeviriyoruz
+        secilen_kat = secilen_styled_kat.split(" ", 1)[1] if " " in secilen_styled_kat else secilen_styled_kat
+        
+        filtrelenmis_veriler = [v for v in bina_verileri if v["kat_adi"] == secilen_kat]
+
+        col1, col2 = st.columns(2, gap="large")
+
+        with col2:
+            st.markdown("### 🧠 Zihinsel Duraklar", unsafe_allow_html=True)
+            durak_isimleri = [f"Durak {d['durak_no']}: {d['baslik']}" for d in filtrelenmis_veriler]
+            
+            # İç menü için benzersiz anahtar ekliyoruz
+            secilen_durak_ismi = st.radio("İncelemek istediğiniz durağı seçin:", durak_isimleri, key=f"durak_secim_{secilen_kat}")
+            
+            secilen_durak_data = next(d for d in filtrelenmis_veriler if f"Durak {d['durak_no']}: {d['baslik']}" == secilen_durak_ismi)
+            
+            st.markdown(f'<br><span class="anahtar-kelime">Şifre: {secilen_durak_data["anahtar_kelime"]}</span>', unsafe_allow_html=True)
+            st.markdown(f'<p class="senaryo-metni"><br>{secilen_durak_data["senaryo"]}</p>', unsafe_allow_html=True)
+
+        with col1:
+            st.markdown(f'<p class="saray-baslik">{secilen_kat}</p>', unsafe_allow_html=True)
+            # KATIN ana resmini gösteriyoruz
+            if filtrelenmis_veriler and filtrelenmis_veriler[0].get("gorsel_url"):
+                st.image(filtrelenmis_veriler[0]["gorsel_url"], use_container_width=True)
+            else:
+                st.info("Bu durak için görsel henüz eklenmedi.")
+    else:
+        st.warning("Bu binada henüz hiçbir kat inşa edilmedi.")
 else:
     st.warning("Henüz sarayda hiçbir kat inşa edilmedi.")
