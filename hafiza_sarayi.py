@@ -154,9 +154,9 @@ if veriler:
             "5. Kat: Stok Devir Bölümü": "⚙️",
             "6. Kat: Alacak Tahsil Bölümü": "🧲",
             "7. Kat: Aktif Devir Bölümü": "🌋",
-            "8. Kat: Özkaynak Devir Bölümü": "👑"
+            "8. Kat: Özkaynak Devir Bölümü": "👑",
             "9. Kat: Kaldıraç Bölümü": "⚖️",
-            "10. Kat: Finansman Bölümü": "🛡️",
+            "10. Kat: Finansman Bölümü": "🛡️"
         }
         
         styled_kat_listesi = []
