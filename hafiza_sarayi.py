@@ -188,3 +188,6 @@ if veriler:
         st.warning("Bu binada henüz hiçbir kat inşa edilmedi.")
 else:
     st.warning("Henüz sarayda hiçbir kat inşa edilmedi.")
+    st.write("") # Sayfa sonuna boş bir satır ekler
+# veya
+st.markdown("<br><br>", unsafe_allow_html=True)
