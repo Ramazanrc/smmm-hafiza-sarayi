@@ -130,11 +130,21 @@ if veriler:
         if v["kat_adi"] not in kat_listesi:
             kat_listesi.append(v["kat_adi"])
 
-    # Zemin katı en başa sabitleme
-    zemin_kat_ismi = "Zemin Kat: VUK Lobisi"
-    if zemin_kat_ismi in kat_listesi:
-        kat_listesi.remove(zemin_kat_ismi)
-        kat_listesi.insert(0, zemin_kat_ismi)
+    # --- ASANSÖRÜ DOĞRU SIRALAMA MANTIĞI (TÜM BİNALAR İÇİN) ---
+    def kat_sirasi(kat_adi):
+        # Eğer kat isminde "Zemin" geçiyorsa en başa (0. sıraya) sabitle
+        if "Zemin" in kat_adi:
+            return 0
+        try:
+            # "10. Kat: Finansman" veya "1. Kat: GVK" metninden sadece baştaki rakamı çek
+            return int(kat_adi.split('.')[0])
+        except:
+            # Eğer rakam bulamazsa en sona at
+            return 99
+
+    # Listeyi yukarıdaki zeki kurala göre sırala
+    kat_listesi = sorted(kat_listesi, key=kat_sirasi)
+    # ----------------------------------------------------------
 
     if kat_listesi:
         # Kat listesine ikonlar ekleyerek asansörü görselleştiriyoruz
