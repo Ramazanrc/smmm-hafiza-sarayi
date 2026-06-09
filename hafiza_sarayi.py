@@ -169,7 +169,8 @@ if veriler:
             "10. Kat: Finansman Bölümü": "🛡️",
             "11. Kat: Faiz Karşılama Bölümü": "🧯",
             "12. Kat: Aktif Kârlılık Bölümü": "💎",
-            "13. Kat: Özkaynak Kârlılık Bölümü": "💍"
+            "13. Kat: Özkaynak Kârlılık Bölümü": "💍",
+            "14. Kat: Net Kâr Marjı Bölümü": "💧"
         }
         
         styled_kat_listesi = []
