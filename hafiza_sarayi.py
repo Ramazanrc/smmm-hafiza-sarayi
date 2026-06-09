@@ -171,7 +171,8 @@ if veriler:
             "12. Kat: Aktif Kârlılık Bölümü": "💎",
             "13. Kat: Özkaynak Kârlılık Bölümü": "💍",
             "14. Kat: Net Kâr Marjı Bölümü": "💧",
-            "15. Kat: Brüt Kâr Marjı Bölümü": "⛏️"
+            "15. Kat: Brüt Kâr Marjı Bölümü": "⛏️",
+            "16. Kat: Faaliyet Kârı Bölümü": "🔋"
         }
         
         styled_kat_listesi = []
